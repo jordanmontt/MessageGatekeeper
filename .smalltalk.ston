@@ -1,0 +1,9 @@
+SmalltalkCISpec {
+  #loading : [
+    SCIMetacelloLoadSpec {
+      #baseline : 'MessageGatekeeper',
+      #directory : 'src',
+      #platforms : [ #pharo ]
+    }
+  ]
+}
