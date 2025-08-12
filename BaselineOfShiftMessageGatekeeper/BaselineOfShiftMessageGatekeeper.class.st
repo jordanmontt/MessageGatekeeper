@@ -10,11 +10,11 @@ BaselineOfShiftMessageGatekeeper >> baseline: spec [
 
 	<baseline>
 	spec for: #common do: [
-			spec package: 'MessageGateKeeper'.
-			spec package: 'MessageGateKeeper-Tests' with: [ spec requires: #( 'MessageGateKeeper' ) ].
+			spec package: 'MessageGatekeeper'.
+			spec package: 'MessageGatekeeper-Tests' with: [ spec requires: #( 'MessageGatekeeper' ) ].
 
 			"Groups"
 			spec group: 'default' with: #( 'core' 'tests' ).
-			spec group: 'core' with: #( 'MessageGateKeeper' ).
-			spec group: 'tests' with: #( 'MessageGateKeeper-Tests' ) ]
+			spec group: 'core' with: #( 'MessageGatekeeper' ).
+			spec group: 'tests' with: #( 'MessageGatekeeper-Tests' ) ]
 ]
