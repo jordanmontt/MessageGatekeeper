@@ -227,13 +227,23 @@ MgkMethodWrapper >> run: aSelector with: anArrayOfObjects in: aReceiver [
 	"Do not intercept"
 
 	<methodProxyCannotWrap>
-	| process |
+	<primitive: 198>
+	| unwinder complete process result |
+	unwinder := (MgkInstrumentationUnwinder newWithHandler: handler receiver: aReceiver arguments: anArrayOfObjects).	
+	
 	process := Processor activeProcess.
 
 	(isDisabled or: [ process isMeta ]) ifTrue: [
 		^ self receiver: aReceiver withArgs: anArrayOfObjects executeMethod: proxifiedMethod ].
 
-	^ self valueWithReceiver: aReceiver arguments: anArrayOfObjects
+	process runInMetaLevel: [
+		handler beforeExecutionWithReceiver: aReceiver arguments: anArrayOfObjects ].
+
+	result := self receiver: aReceiver withArgs: anArrayOfObjects executeMethod: proxifiedMethod.
+	complete := true.
+
+	process runInMetaLevel: [
+		^ handler afterExecutionWithReceiver: aReceiver arguments: anArrayOfObjects returnValue: result]
 ]
 
 { #category : 'accessing' }
@@ -287,23 +297,6 @@ MgkMethodWrapper >> unproxifiedMethod [
 MgkMethodWrapper >> unproxifiedMethod: aCompiledMethod [
 
 	proxifiedMethod := aCompiledMethod
-]
-
-{ #category : 'evaluating' }
-MgkMethodWrapper >> valueWithReceiver: receiver arguments: arguments [
-
-	<methodProxyCannotWrap>
-	| result process |
-	process := Processor activeProcess.
-	process runInMetaLevel: [
-		handler beforeExecutionWithReceiver: receiver arguments: arguments ].
-
-	[ result := self receiver: receiver withArgs: arguments executeMethod: proxifiedMethod ]
-		methodProxiesIfCurtailed: 
-			(MgkInstrumentationUnwinder newWithHandler: handler receiver: receiver arguments: arguments).
-
-	process runInMetaLevel: [
-		^ handler afterExecutionWithReceiver: receiver arguments: arguments returnValue: result]
 ]
 
 { #category : 'accessing' }
